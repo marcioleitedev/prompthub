@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  # Backend Laravel (com Nginx, Queue Worker e Reverb via Supervisor)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: prompthub-backend
+    ports:
+      - "8000:80"      # Nginx/Laravel
+      - "8080:8080"    # Reverb WebSocket
+    volumes:
+      - ./backend:/var/www/html
+      - backend-vendor:/var/www/html/vendor
+    environment:
+      - APP_ENV=${APP_ENV:-production}
+      - APP_DEBUG=${APP_DEBUG:-false}
+      - APP_KEY=${APP_KEY}
+      - DB_CONNECTION=mysql
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT:-3306}
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - REDIS_HOST=${REDIS_HOST}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_PORT=${REDIS_PORT:-6379}
+      - QUEUE_CONNECTION=redis
+      - CACHE_DRIVER=redis
+      - SESSION_DRIVER=redis
+      - FRONTEND_URL=${FRONTEND_URL}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - GOOGLE_REDIRECT_URI=${GOOGLE_REDIRECT_URI}
+      - JWT_SECRET=${JWT_SECRET}
+    networks:
+      - prompthub-network
+    restart: unless-stopped
+
+  # Frontend Vue.js
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: prompthub-frontend
+    ports:
+      - "80:80"
+    environment:
+      - VITE_API_URL=${VITE_API_URL:-http://localhost:8000}
+    depends_on:
+      - backend
+    networks:
+      - prompthub-network
+    restart: unless-stopped
+
+volumes:
+  backend-vendor:
+
+networks:
+  prompthub-network:
+    driver: bridge

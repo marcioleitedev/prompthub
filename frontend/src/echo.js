@@ -26,10 +26,10 @@ export function initializeEcho() {
             key: 'key_portfolio_ia',
             
             // Configurações do servidor WebSocket (Reverb)
-            wsHost: 'localhost',
+            wsHost: 'dflix-prompthub-backend.a8zera.easypanel.host',
             wsPort: 8080,
             wssPort: 8080,
-            forceTLS: false,
+            forceTLS: true,
             disableStats: true,
             
             // Configurações de Autorização
@@ -38,7 +38,7 @@ export function initializeEcho() {
                     'Authorization': `Bearer ${userToken}`,
                 },
             },
-            authEndpoint: 'http://127.0.0.1:8000/api/broadcasting/auth', 
+            authEndpoint: 'https://dflix-prompthub-backend.a8zera.easypanel.host/api/broadcasting/auth', 
         });
 
         console.log('Echo inicializado com sucesso');

@@ -172,14 +172,14 @@ class AuthController extends Controller
             $token = JWTAuth::fromUser($user);
 
             // Redirect to frontend with token
-            $frontendUrl = env('FRONTEND_URL', 'https://marcioleite.cloud');
+            $frontendUrl = rtrim(env('FRONTEND_URL', 'https://marcioleite.cloud'), '/');
             return redirect()->away("{$frontendUrl}/auth/callback?token={$token}");
 
         } catch (\Exception $e) {
             Log::error('Google OAuth Error: ' . $e->getMessage());
             Log::error('Stack trace: ' . $e->getTraceAsString());
             
-            $frontendUrl = env('FRONTEND_URL', 'https://marcioleite.cloud');
+            $frontendUrl = rtrim(env('FRONTEND_URL', 'https://marcioleite.cloud'), '/');
             return redirect()->away("{$frontendUrl}/login?error=authentication_failed&message=" . urlencode($e->getMessage()));
         }
     }

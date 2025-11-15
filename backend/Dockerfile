@@ -40,6 +40,10 @@ COPY nginx.conf /etc/nginx/sites-available/default
 # Copiar configuração do supervisor
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
+# Copiar script de inicialização
+COPY start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+
 # Ajustar permissões
 RUN chmod -R 775 storage bootstrap/cache
 RUN chown -R www-data:www-data storage bootstrap/cache
@@ -50,5 +54,5 @@ RUN mkdir -p /var/log/supervisor
 # Expor portas (80 para web, 8080 para reverb)
 EXPOSE 80 8080
 
-# Comando para iniciar o supervisor
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+# Comando para iniciar via script
+CMD ["/usr/local/bin/start.sh"]

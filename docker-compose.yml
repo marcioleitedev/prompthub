@@ -1,0 +1,113 @@
+version: '3.8'
+
+services:
+  # Backend Laravel
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: prompthub-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/var/www/html
+      - backend-vendor:/var/www/html/vendor
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - DB_CONNECTION=mysql
+      - DB_HOST=SEU_IP_MYSQL_AQUI
+      - DB_PORT=3306
+      - DB_DATABASE=seu_database
+      - DB_USERNAME=seu_usuario
+      - DB_PASSWORD=sua_senha
+      - REDIS_HOST=SEU_IP_REDIS_AQUI
+      - REDIS_PASSWORD=sua_senha_redis
+      - REDIS_PORT=6379
+      - FRONTEND_URL=http://localhost
+      - GOOGLE_CLIENT_ID=sua_google_client_id_aqui
+      - GOOGLE_CLIENT_SECRET=sua_google_client_secret_aqui
+      - GOOGLE_REDIRECT_URI=http://localhost:8000/api/auth/google/callback
+    networks:
+      - prompthub-network
+    command: php artisan serve --host=0.0.0.0 --port=8000
+
+  # Queue Worker
+  queue-worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: prompthub-queue
+    volumes:
+      - ./backend:/var/www/html
+      - backend-vendor:/var/www/html/vendor
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - DB_CONNECTION=mysql
+      - DB_HOST=SEU_IP_MYSQL_AQUI
+      - DB_PORT=3306
+      - DB_DATABASE=seu_database
+      - DB_USERNAME=seu_usuario
+      - DB_PASSWORD=sua_senha
+      - REDIS_HOST=SEU_IP_REDIS_AQUI
+      - REDIS_PASSWORD=sua_senha_redis
+      - REDIS_PORT=6379
+    networks:
+      - prompthub-network
+    command: php artisan queue:work --tries=3 --timeout=300
+    depends_on:
+      - backend
+
+  # Reverb WebSocket Server
+  reverb:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: prompthub-reverb
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./backend:/var/www/html
+      - backend-vendor:/var/www/html/vendor
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - DB_CONNECTION=mysql
+      - DB_HOST=SEU_IP_MYSQL_AQUI
+      - DB_PORT=3306
+      - DB_DATABASE=seu_database
+      - DB_USERNAME=seu_usuario
+      - DB_PASSWORD=sua_senha
+      - REDIS_HOST=SEU_IP_REDIS_AQUI
+      - REDIS_PASSWORD=sua_senha_redis
+      - REDIS_PORT=6379
+    networks:
+      - prompthub-network
+    command: php artisan reverb:start --host=0.0.0.0 --port=8080
+    depends_on:
+      - backend
+
+  # Frontend Vue.js
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: prompthub-frontend
+    ports:
+      - "80:80"
+    volumes:
+      - ./frontend:/app
+      - frontend-modules:/app/node_modules
+    depends_on:
+      - backend
+    networks:
+      - prompthub-network
+
+volumes:
+  backend-vendor:
+  frontend-modules:
+
+networks:
+  prompthub-network:
+    driver: bridge

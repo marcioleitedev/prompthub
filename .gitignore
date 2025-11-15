@@ -1,0 +1,47 @@
+# Laravel
+/backend/node_modules
+/backend/vendor
+/backend/.env
+/backend/.env.backup
+/backend/storage/*.key
+/backend/storage/logs/*
+/backend/storage/framework/cache/*
+/backend/storage/framework/sessions/*
+/backend/storage/framework/views/*
+/backend/bootstrap/cache/*
+/backend/composer.lock
+
+# Vue.js
+/frontend/node_modules
+/frontend/dist
+/frontend/.env
+/frontend/.env.local
+/frontend/.env.production.local
+/frontend/package-lock.json
+
+# Docker
+docker-compose.override.yml
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files (keep .env.example and .env.docker)
+.env.production.local
+.credentials.local
+.env.local
+

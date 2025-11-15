@@ -1,0 +1,50 @@
+name: Build and Test
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches-ignore:
+      - main
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  test-backend:
+    name: Test Backend
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build backend image
+        run: |
+          cd backend
+          docker build -t prompthub-backend-test .
+
+      - name: Test backend container
+        run: |
+          docker run --rm prompthub-backend-test php --version
+          echo "Backend build successful!"
+
+  test-frontend:
+    name: Test Frontend
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build frontend image
+        run: |
+          cd frontend
+          docker build -t prompthub-frontend-test .
+
+      - name: Test frontend container
+        run: |
+          docker run --rm prompthub-frontend-test nginx -v
+          echo "Frontend build successful!"

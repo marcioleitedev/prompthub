@@ -195,11 +195,24 @@ const messages = {
   }
 }
 
+// Get locale safely from localStorage
+let savedLocale = 'pt'
+try {
+  const stored = localStorage.getItem('locale')
+  if (stored && (stored === 'pt' || stored === 'en')) {
+    savedLocale = stored
+  }
+} catch (e) {
+  console.warn('Failed to read locale from localStorage:', e)
+}
+
 const i18n = createI18n({
   legacy: false,
-  locale: localStorage.getItem('locale') || 'pt',
+  locale: savedLocale,
   fallbackLocale: 'pt',
-  messages
+  messages,
+  missingWarn: false,
+  fallbackWarn: false
 })
 
 export default i18n

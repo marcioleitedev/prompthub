@@ -2,24 +2,24 @@
   <div class="home">
     <nav class="navbar">
       <div class="nav-content">
-        <h1>PromptHub</h1>
+        <h1>{{ t('home.title') }}</h1>
         <div class="user-menu" v-if="user">
           <img :src="user.avatar || 'https://via.placeholder.com/40'" :alt="user.name" class="avatar" />
           <span>{{ user.name }}</span>
-          <button @click="handleLogout" class="btn-logout">Sair</button>
+          <button @click="handleLogout" class="btn-logout">{{ t('nav.logout') }}</button>
         </div>
       </div>
     </nav>
 
     <div class="container">
       <div class="welcome-card">
-        <h2>Bem-vindo ao PromptHub! 🚀</h2>
-        <p v-if="user">Olá, {{ user.name }}! Você está autenticado com sucesso.</p>
-        <p v-else>Carregando...</p>
+        <h2>{{ t('home.welcome') }}</h2>
+        <p v-if="user">{{ t('home.subtitle', { name: user.name }) }}</p>
+        <p v-else>{{ t('home.loading') }}</p>
         
         <div class="cta-section">
           <button @click="goToAiPrompt" class="btn-ai">
-            🤖 Experimentar Assistente de IA
+            {{ t('home.tryAssistant') }}
           </button>
         </div>
       </div>
@@ -30,8 +30,10 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { logout } from '../services/auth'
 
+const { t } = useI18n()
 const router = useRouter()
 const user = ref(null)
 

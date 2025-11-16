@@ -2,21 +2,21 @@
   <div class="login-container">
     <div class="login-card">
       <div class="brand">
-        <h1 class="brand-name">🚀 PromptHub</h1>
-        <p class="brand-tagline">Hub de Assistentes Inteligentes</p>
+        <h1 class="brand-name">{{ t('login.brandName') }}</h1>
+        <p class="brand-tagline">{{ t('login.brandTagline') }}</p>
       </div>
       
-      <h2>{{ isRegistering ? 'Criar Conta' : 'Login' }}</h2>
+      <h2>{{ isRegistering ? t('login.createAccount') : t('login.title') }}</h2>
       
       <form @submit.prevent="handleLogin" v-if="!isRegistering">
         <div class="form-group">
-          <label for="email">Email</label>
+          <label for="email">{{ t('login.email') }}</label>
           <input
             type="email"
             id="email"
             v-model="loginForm.email"
             required
-            placeholder="seu@email.com"
+            :placeholder="t('login.emailPlaceholder')"
           />
         </div>
 
@@ -138,9 +138,11 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { login, register } from '../services/auth'
 import { API_BASE } from '../config'
 
+const { t } = useI18n()
 const router = useRouter()
 const isRegistering = ref(false)
 const loading = ref(false)

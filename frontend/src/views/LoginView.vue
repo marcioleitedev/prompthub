@@ -21,22 +21,22 @@
         </div>
 
         <div class="form-group">
-          <label for="password">Senha</label>
+          <label for="password">{{ t('login.password') }}</label>
           <input
             type="password"
             id="password"
             v-model="loginForm.password"
             required
-            placeholder="••••••••"
+            :placeholder="t('login.passwordPlaceholder')"
           />
         </div>
 
         <button type="submit" class="btn-primary" :disabled="loading">
-          {{ loading ? 'Entrando...' : 'Entrar' }}
+          {{ loading ? t('login.entering') : t('login.enterButton') }}
         </button>
 
         <div class="divider">
-          <span>ou</span>
+          <span>{{ t('login.or') }}</span>
         </div>
 
         <button type="button" @click="loginWithGoogle" class="btn-google">
@@ -47,68 +47,68 @@
             <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
             <path fill="none" d="M0 0h48v48H0z"/>
           </svg>
-          Continuar com Google
+          {{ t('login.continueGoogle') }}
         </button>
 
         <p class="toggle-form">
-          Não tem uma conta? 
-          <a href="#" @click.prevent="isRegistering = true">Cadastre-se</a>
+          {{ t('login.noAccount') }} 
+          <a href="#" @click.prevent="isRegistering = true">{{ t('login.signUp') }}</a>
         </p>
       </form>
 
       <form @submit.prevent="handleRegister" v-else>
         <div class="form-group">
-          <label for="name">Nome</label>
+          <label for="name">{{ t('login.name') }}</label>
           <input
             type="text"
             id="name"
             v-model="registerForm.name"
             required
-            placeholder="Seu nome completo"
+            :placeholder="t('login.namePlaceholder')"
           />
         </div>
 
         <div class="form-group">
-          <label for="register-email">Email</label>
+          <label for="register-email">{{ t('login.email') }}</label>
           <input
             type="email"
             id="register-email"
             v-model="registerForm.email"
             required
-            placeholder="seu@email.com"
+            :placeholder="t('login.emailPlaceholder')"
           />
         </div>
 
         <div class="form-group">
-          <label for="register-password">Senha</label>
+          <label for="register-password">{{ t('login.password') }}</label>
           <input
             type="password"
             id="register-password"
             v-model="registerForm.password"
             required
-            placeholder="••••••••"
+            :placeholder="t('login.passwordPlaceholder')"
             minlength="6"
           />
         </div>
 
         <div class="form-group">
-          <label for="password-confirmation">Confirmar Senha</label>
+          <label for="password-confirmation">{{ t('login.confirmPassword') }}</label>
           <input
             type="password"
             id="password-confirmation"
             v-model="registerForm.password_confirmation"
             required
-            placeholder="••••••••"
+            :placeholder="t('login.passwordPlaceholder')"
             minlength="6"
           />
         </div>
 
         <button type="submit" class="btn-primary" :disabled="loading">
-          {{ loading ? 'Cadastrando...' : 'Cadastrar' }}
+          {{ loading ? t('login.registering') : t('login.registerButton') }}
         </button>
 
         <div class="divider">
-          <span>ou</span>
+          <span>{{ t('login.or') }}</span>
         </div>
 
         <button type="button" @click="loginWithGoogle" class="btn-google">
@@ -119,12 +119,12 @@
             <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
             <path fill="none" d="M0 0h48v48H0z"/>
           </svg>
-          Cadastrar com Google
+          {{ t('login.registerGoogle') }}
         </button>
 
         <p class="toggle-form">
-          Já tem uma conta? 
-          <a href="#" @click.prevent="isRegistering = false">Faça login</a>
+          {{ t('login.hasAccount') }} 
+          <a href="#" @click.prevent="isRegistering = false">{{ t('login.signIn') }}</a>
         </p>
       </form>
 
@@ -169,7 +169,7 @@ const handleLogin = async () => {
     localStorage.setItem('user', JSON.stringify(response.user))
     router.push('/')
   } catch (err) {
-    error.value = err.response?.data?.error || 'Erro ao fazer login'
+    error.value = err.response?.data?.error || t('login.errorGoogle')
   } finally {
     loading.value = false
   }
@@ -181,7 +181,7 @@ const handleRegister = async () => {
     error.value = ''
     
     if (registerForm.value.password !== registerForm.value.password_confirmation) {
-      error.value = 'As senhas não coincidem'
+      error.value = t('login.passwordMismatch')
       return
     }
     
@@ -192,7 +192,7 @@ const handleRegister = async () => {
   } catch (err) {
     error.value = err.response?.data?.errors 
       ? Object.values(err.response.data.errors).flat().join(', ')
-      : 'Erro ao fazer cadastro'
+      : t('login.errorGoogle')
   } finally {
     loading.value = false
   }
@@ -206,7 +206,7 @@ const loginWithGoogle = async () => {
       window.location.href = data.url
     }
   } catch (err) {
-    error.value = 'Erro ao conectar com Google'
+    error.value = t('login.errorGoogle')
   }
 }
 </script>

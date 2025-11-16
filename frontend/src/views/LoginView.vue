@@ -138,11 +138,11 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useI18n } from 'vue-i18n'
+import { useLanguage } from '../composables/useLanguage'
 import { login, register } from '../services/auth'
 import { API_BASE } from '../config'
 
-const { t } = useI18n()
+const { t } = useLanguage()
 const router = useRouter()
 const isRegistering = ref(false)
 const loading = ref(false)

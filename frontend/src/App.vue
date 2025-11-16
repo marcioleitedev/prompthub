@@ -1,12 +1,8 @@
 <script setup>
-import { useI18n } from 'vue-i18n'
+import { useLanguage } from './composables/useLanguage'
 
-const { locale, t } = useI18n()
+const { locale, t, setLanguage } = useLanguage()
 
-const changeLanguage = (lang) => {
-  locale.value = lang
-  localStorage.setItem('locale', lang)
-}
 </script>
 
 <template>
@@ -16,18 +12,18 @@ const changeLanguage = (lang) => {
       <div class="footer-content">
         <div class="language-selector">
           <button 
-            @click="changeLanguage('pt')" 
+            @click="setLanguage('pt')" 
             :class="{ active: locale === 'pt' }"
             class="lang-btn"
           >
-            🇧🇷 PT
+            PT
           </button>
           <button 
-            @click="changeLanguage('en')" 
+            @click="setLanguage('en')" 
             :class="{ active: locale === 'en' }"
             class="lang-btn"
           >
-            🇺🇸 EN
+            EN
           </button>
         </div>
         <p>© 2025 PromptHub - {{ t('footer.developedBy') }}

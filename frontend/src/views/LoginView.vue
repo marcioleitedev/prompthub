@@ -6,37 +6,37 @@
         <p class="brand-tagline">Hub de Assistentes Inteligentes</p>
       </div>
       
-      <h2>{{ isRegistering ? 'Criar Conta' : 'Login' }}</h2>
+      <h2>{{ isRegistering ? t('login.createAccount') : t('login.title') }}</h2>
       
       <form @submit.prevent="handleLogin" v-if="!isRegistering">
         <div class="form-group">
-          <label for="email">Email</label>
+          <label for="email">{{ t('login.email') }}</label>
           <input
             type="email"
             id="email"
             v-model="loginForm.email"
             required
-            placeholder="seu@email.com"
+            :placeholder="t('login.emailPlaceholder')"
           />
         </div>
 
         <div class="form-group">
-          <label for="password">Senha</label>
+          <label for="password">{{ t('login.password') }}</label>
           <input
             type="password"
             id="password"
             v-model="loginForm.password"
             required
-            placeholder="••••••••"
+            :placeholder="t('login.passwordPlaceholder')"
           />
         </div>
 
         <button type="submit" class="btn-primary" :disabled="loading">
-          {{ loading ? 'Entrando...' : 'Entrar' }}
+          {{ loading ? t('login.entering') : t('login.enterButton') }}
         </button>
 
         <div class="divider">
-          <span>ou</span>
+          <span>{{ t('login.or') }}</span>
         </div>
 
         <button type="button" @click="loginWithGoogle" class="btn-google">
@@ -47,29 +47,29 @@
             <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
             <path fill="none" d="M0 0h48v48H0z"/>
           </svg>
-          Continuar com Google
+          {{ t('login.continueGoogle') }}
         </button>
 
         <p class="toggle-form">
-          Não tem uma conta? 
-          <a href="#" @click.prevent="isRegistering = true">Cadastre-se</a>
+          {{ t('login.noAccount') }}
+          <a href="#" @click.prevent="isRegistering = true">{{ t('login.signUp') }}</a>
         </p>
       </form>
 
       <form @submit.prevent="handleRegister" v-else>
         <div class="form-group">
-          <label for="name">Nome</label>
+          <label for="name">{{ t('login.name') }}</label>
           <input
             type="text"
             id="name"
             v-model="registerForm.name"
             required
-            placeholder="Seu nome completo"
+            :placeholder="t('login.namePlaceholder')"
           />
         </div>
 
         <div class="form-group">
-          <label for="register-email">Email</label>
+          <label for="register-email">{{ t('login.email') }}</label>
           <input
             type="email"
             id="register-email"
@@ -138,9 +138,11 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { login, register } from '../services/auth'
 import { API_BASE } from '../config'
 
+const { t } = useI18n()
 const router = useRouter()
 const isRegistering = ref(false)
 const loading = ref(false)

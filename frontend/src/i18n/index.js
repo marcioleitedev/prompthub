@@ -1,0 +1,201 @@
+import { createI18n } from 'vue-i18n'
+
+const messages = {
+  pt: {
+    nav: {
+      logout: 'Sair'
+    },
+    home: {
+      welcome: 'Bem-vindo ao PromptHub!',
+      subtitle: 'Olá, {name}! Você está autenticado com sucesso.',
+      loading: 'Carregando...',
+      tryAssistant: '🤖 Experimentar Assistente de IA'
+    },
+    login: {
+      title: 'Login',
+      createAccount: 'Criar Conta',
+      email: 'Email',
+      emailPlaceholder: 'seu@email.com',
+      password: 'Senha',
+      passwordPlaceholder: '••••••••',
+      confirmPassword: 'Confirmar Senha',
+      name: 'Nome',
+      namePlaceholder: 'Seu nome completo',
+      enterButton: 'Entrar',
+      registerButton: 'Cadastrar',
+      entering: 'Entrando...',
+      registering: 'Cadastrando...',
+      or: 'ou',
+      continueGoogle: 'Continuar com Google',
+      registerGoogle: 'Cadastrar com Google',
+      noAccount: 'Não tem uma conta?',
+      hasAccount: 'Já tem uma conta?',
+      signUp: 'Cadastre-se',
+      signIn: 'Faça login',
+      errorGoogle: 'Erro ao conectar com Google',
+      passwordMismatch: 'As senhas não coincidem'
+    },
+    aiPrompt: {
+      title: '🤖 Gerenciar Agentes de IA',
+      subtitle: 'Crie e gerencie seus agentes personalizados',
+      myAgents: '🤖 Meus Agentes',
+      directPrompt: '💬 Prompt Direto',
+      selectAI: 'Selecione a IA:',
+      apiToken: 'API Token',
+      tokenPlaceholder: 'Cole seu token da {provider}',
+      yourPrompt: 'Seu Prompt:',
+      promptPlaceholder: 'Digite seu prompt aqui...',
+      characters: 'caracteres',
+      sendPrompt: '🚀 Enviar Prompt',
+      sending: 'Enviando...',
+      clear: '🗑️ Limpar',
+      response: 'Resposta',
+      copy: '📋 Copiar',
+      copied: '✓ Copiado',
+      apiKeysTitle: '🔑 Onde obter suas API Keys:',
+      use: '💬 Usar',
+      edit: '✏️ Editar',
+      delete: '🗑️',
+      createNew: 'Criar Novo Agente',
+      fileData: 'Arquivo/Dados (opcional):',
+      additionalData: 'Dados Adicionais (opcional):',
+      send: '🚀 Enviar',
+      fillAllFields: 'Preencha todos os campos',
+      enterPrompt: 'Digite um prompt',
+      enterToken: 'Digite o API token',
+      deleteConfirm: 'Tem certeza que deseja deletar este agente?',
+      deleteError: 'Erro ao deletar agente'
+    },
+    agentForm: {
+      createTitle: 'Criar Novo Agente',
+      editTitle: 'Editar Agente',
+      name: 'Nome do Agente *',
+      namePlaceholder: 'Ex: Assistente de Código',
+      description: 'Descrição',
+      descriptionPlaceholder: 'Descreva a função deste agente...',
+      provider: 'Provedor de IA *',
+      model: 'Modelo (opcional)',
+      modelPlaceholder: 'Nome do modelo',
+      systemPrompt: 'Prompt do Sistema',
+      systemPromptPlaceholder: 'Ex: Você é um assistente especializado em programação Python...',
+      systemPromptHelp: 'Define o comportamento e personalidade do agente',
+      instructions: 'Instruções Específicas',
+      instructionsPlaceholder: 'Ex: Sempre forneça exemplos de código. Explique conceitos complexos de forma simples...',
+      instructionsHelp: 'Orientações sobre como o agente deve responder',
+      advancedSettings: '⚙️ Configurações Avançadas',
+      temperature: 'Temperatura (Criatividade)',
+      maxTokens: 'Máximo de Tokens',
+      cancel: 'Cancelar',
+      create: 'Criar Agente',
+      update: 'Atualizar',
+      saving: 'Salvando...',
+      fillRequired: 'Preencha os campos obrigatórios'
+    },
+    footer: {
+      developedBy: 'Desenvolvido por'
+    }
+  },
+  en: {
+    nav: {
+      logout: 'Logout'
+    },
+    home: {
+      welcome: 'Welcome to PromptHub!',
+      subtitle: 'Hello, {name}! You are successfully authenticated.',
+      loading: 'Loading...',
+      tryAssistant: '🤖 Try AI Assistant'
+    },
+    login: {
+      title: 'Login',
+      createAccount: 'Create Account',
+      email: 'Email',
+      emailPlaceholder: 'your@email.com',
+      password: 'Password',
+      passwordPlaceholder: '••••••••',
+      confirmPassword: 'Confirm Password',
+      name: 'Name',
+      namePlaceholder: 'Your full name',
+      enterButton: 'Sign In',
+      registerButton: 'Register',
+      entering: 'Signing in...',
+      registering: 'Registering...',
+      or: 'or',
+      continueGoogle: 'Continue with Google',
+      registerGoogle: 'Sign up with Google',
+      noAccount: "Don't have an account?",
+      hasAccount: 'Already have an account?',
+      signUp: 'Sign up',
+      signIn: 'Sign in',
+      errorGoogle: 'Error connecting to Google',
+      passwordMismatch: 'Passwords do not match'
+    },
+    aiPrompt: {
+      title: '🤖 Manage AI Agents',
+      subtitle: 'Create and manage your custom agents',
+      myAgents: '🤖 My Agents',
+      directPrompt: '💬 Direct Prompt',
+      selectAI: 'Select AI:',
+      apiToken: 'API Token',
+      tokenPlaceholder: 'Paste your {provider} token',
+      yourPrompt: 'Your Prompt:',
+      promptPlaceholder: 'Type your prompt here...',
+      characters: 'characters',
+      sendPrompt: '🚀 Send Prompt',
+      sending: 'Sending...',
+      clear: '🗑️ Clear',
+      response: 'Response',
+      copy: '📋 Copy',
+      copied: '✓ Copied',
+      apiKeysTitle: '🔑 Where to get your API Keys:',
+      use: '💬 Use',
+      edit: '✏️ Edit',
+      delete: '🗑️',
+      createNew: 'Create New Agent',
+      fileData: 'File/Data (optional):',
+      additionalData: 'Additional Data (optional):',
+      send: '🚀 Send',
+      fillAllFields: 'Fill in all fields',
+      enterPrompt: 'Enter a prompt',
+      enterToken: 'Enter API token',
+      deleteConfirm: 'Are you sure you want to delete this agent?',
+      deleteError: 'Error deleting agent'
+    },
+    agentForm: {
+      createTitle: 'Create New Agent',
+      editTitle: 'Edit Agent',
+      name: 'Agent Name *',
+      namePlaceholder: 'Ex: Code Assistant',
+      description: 'Description',
+      descriptionPlaceholder: 'Describe this agent function...',
+      provider: 'AI Provider *',
+      model: 'Model (optional)',
+      modelPlaceholder: 'Model name',
+      systemPrompt: 'System Prompt',
+      systemPromptPlaceholder: 'Ex: You are an assistant specialized in Python programming...',
+      systemPromptHelp: 'Defines the agent behavior and personality',
+      instructions: 'Specific Instructions',
+      instructionsPlaceholder: 'Ex: Always provide code examples. Explain complex concepts simply...',
+      instructionsHelp: 'Guidelines on how the agent should respond',
+      advancedSettings: '⚙️ Advanced Settings',
+      temperature: 'Temperature (Creativity)',
+      maxTokens: 'Max Tokens',
+      cancel: 'Cancel',
+      create: 'Create Agent',
+      update: 'Update',
+      saving: 'Saving...',
+      fillRequired: 'Fill in required fields'
+    },
+    footer: {
+      developedBy: 'Developed by'
+    }
+  }
+}
+
+const i18n = createI18n({
+  legacy: false,
+  locale: localStorage.getItem('locale') || 'pt',
+  fallbackLocale: 'pt',
+  messages
+})
+
+export default i18n

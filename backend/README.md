@@ -1,59 +1,171 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# PromptHub API - Backend
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## 🚀 Sobre o Projeto
 
-## About Laravel
+PromptHub é uma API completa para gerenciamento de prompts de IA e agentes AI personalizados. Sistema que permite:
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- ✅ Autenticação via email/senha ou Google OAuth
+- ✅ Cadastro e gerenciamento de agentes de IA personalizados
+- ✅ Envio de prompts para OpenAI e Google Gemini
+- ✅ Documentação completa com Swagger/OpenAPI
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 📚 Documentação da API
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 🔗 Acessar Swagger UI
 
-## Learning Laravel
+**Local:** http://localhost:8000/api/documentation  
+**Produção:** https://api-prompthub.marcioleite.cloud/api/documentation
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### 📖 Guias de Documentação
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- **[SWAGGER_DOCUMENTATION.md](SWAGGER_DOCUMENTATION.md)** - Documentação completa da API
+- **[QUICK_START_SWAGGER.md](QUICK_START_SWAGGER.md)** - Guia rápido para testar
 
-## Laravel Sponsors
+## 🛠️ Tecnologias
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- **Laravel 12.x** - Framework PHP
+- **JWT Auth** - Autenticação via tokens
+- **L5-Swagger** - Documentação OpenAPI/Swagger
+- **Laravel Socialite** - OAuth Google
+- **MySQL/PostgreSQL** - Banco de dados
 
-### Premium Partners
+## ⚙️ Instalação
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+```bash
+# Clone o repositório
+git clone [repo-url]
+cd backend
 
-## Contributing
+# Instalar dependências
+composer install
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+# Configurar ambiente
+cp .env.example .env
+php artisan key:generate
+php artisan jwt:secret
 
-## Code of Conduct
+# Configurar banco de dados no .env
+# DB_CONNECTION=mysql
+# DB_DATABASE=prompthub
+# DB_USERNAME=root
+# DB_PASSWORD=
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+# Executar migrations
+php artisan migrate
 
-## Security Vulnerabilities
+# Gerar documentação Swagger
+php artisan l5-swagger:generate
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# Iniciar servidor
+php artisan serve
+```
 
-## License
+## 🔐 Endpoints Principais
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Authentication
+- `POST /api/register` - Registrar usuário
+- `POST /api/login` - Login
+- `POST /api/logout` - Logout
+- `GET /api/me` - Dados do usuário autenticado
+- `GET /api/auth/google` - OAuth Google
+- `GET /api/auth/google/callback` - Callback OAuth
+
+### AI Prompts
+- `POST /api/ai/prompt` - Enviar prompt para IA
+
+### AI Agents (CRUD Completo)
+- `GET /api/agents` - Listar agentes
+- `POST /api/agents` - Criar agente
+- `GET /api/agents/{id}` - Ver agente
+- `PUT /api/agents/{id}` - Atualizar agente
+- `DELETE /api/agents/{id}` - Deletar agente
+- `POST /api/agents/{id}/prompt` - Enviar prompt para agente
+
+### Health Check
+- `GET /api/health` - Status da API
+
+## 🧪 Testando a API
+
+### Via Swagger UI (Recomendado)
+1. Acesse http://localhost:8000/api/documentation
+2. Faça login/registro para obter token JWT
+3. Clique em "Authorize" e cole o token
+4. Teste qualquer endpoint diretamente na interface
+
+### Via cURL
+
+```bash
+# Login
+curl -X POST http://localhost:8000/api/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"user@example.com","password":"password"}'
+
+# Listar agentes (com token)
+curl -X GET http://localhost:8000/api/agents \
+  -H "Authorization: Bearer SEU_TOKEN_JWT"
+```
+
+## 📦 Comandos Úteis
+
+```bash
+# Regenerar documentação Swagger
+php artisan l5-swagger:generate
+
+# Limpar cache
+php artisan cache:clear
+php artisan config:clear
+
+# Ver rotas
+php artisan route:list
+
+# Executar testes
+php artisan test
+```
+
+## 🌐 Deploy em Produção
+
+### Docker
+
+```bash
+# Build da imagem
+docker build -t prompthub-api .
+
+# Executar container
+docker run -p 8000:8000 prompthub-api
+```
+
+### Easypanel / Servidores
+
+1. Configure variáveis de ambiente (`.env`)
+2. Execute migrations: `php artisan migrate --force`
+3. Gere documentação: `php artisan l5-swagger:generate`
+4. Configure Nginx/Apache para servir `public/index.php`
+
+## 🔑 Variáveis de Ambiente Importantes
+
+```env
+APP_URL=http://localhost:8000
+FRONTEND_URL=http://localhost:5173
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=prompthub
+DB_USERNAME=root
+DB_PASSWORD=
+
+JWT_SECRET=seu-jwt-secret-aqui
+JWT_TTL=60
+
+GOOGLE_CLIENT_ID=seu-google-client-id
+GOOGLE_CLIENT_SECRET=seu-google-client-secret
+GOOGLE_REDIRECT=http://localhost:8000/api/auth/google/callback
+```
+
+## 📝 Licença
+
+MIT License - PromptHub 2025
+
+---
+
+**Desenvolvido com ❤️ usando Laravel + Swagger**

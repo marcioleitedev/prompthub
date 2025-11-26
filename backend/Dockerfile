@@ -34,6 +34,9 @@ RUN rm -rf bootstrap/cache/*.php
 # Instalar dependências do Composer (com dev para evitar erros)
 RUN composer install --no-interaction --optimize-autoloader
 
+# Gerar documentação Swagger (continua mesmo se falhar)
+RUN php artisan l5-swagger:generate 2>&1 || echo "Swagger docs will be generated on container start"
+
 # Copiar configuração do nginx
 COPY nginx.conf /etc/nginx/sites-available/default
 

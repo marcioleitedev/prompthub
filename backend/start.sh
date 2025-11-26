@@ -18,6 +18,10 @@ php artisan cache:clear || true
 php artisan route:clear || true
 php artisan view:clear || true
 
+# Gerar documentação Swagger
+echo "📚 Gerando documentação Swagger..."
+php artisan l5-swagger:generate || echo "⚠️  Aviso: Não foi possível gerar docs Swagger"
+
 # Verificar conexão com banco
 echo "🔍 Verificando conexão com banco..."
 php artisan tinker --execute="DB::connection()->getPdo();" || echo "⚠️  Aviso: Não foi possível conectar ao banco"

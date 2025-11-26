@@ -1,0 +1,1417 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "PromptHub API Documentation",
+        "description": "API completa para gerenciamento de prompts de IA e agentes AI. Sistema que permite autenticacao via email/senha ou Google OAuth, cadastro e gerenciamento de agentes de IA personalizados, envio de prompts para OpenAI e Google Gemini.",
+        "contact": {
+            "name": "PromptHub Support",
+            "email": "suporte@prompthub.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8000/api",
+            "description": "Local Development Server"
+        },
+        {
+            "url": "https://dflix-prompthub-backend.a8zera.easypanel.host/api",
+            "description": "Production Server (Easypanel)"
+        },
+        {
+            "url": "https://api-prompthub.marcioleite.cloud/api",
+            "description": "Production Server (Alternative)"
+        }
+    ],
+    "paths": {
+        "/agents": {
+            "get": {
+                "tags": [
+                    "AI Agents"
+                ],
+                "summary": "Listar agentes de IA",
+                "description": "Retorna todos os agentes de IA do usuario autenticado ordenados por data de criacao (mais recentes primeiro).",
+                "operationId": "listAgents",
+                "responses": {
+                    "200": {
+                        "description": "Lista de agentes retornada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "user_id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "name": {
+                                                "type": "string",
+                                                "example": "Assistente de Codigo Python"
+                                            },
+                                            "description": {
+                                                "type": "string",
+                                                "example": "Agente especializado em revisar e otimizar codigo Python"
+                                            },
+                                            "ai_provider": {
+                                                "type": "string",
+                                                "example": "openai"
+                                            },
+                                            "ai_model": {
+                                                "type": "string",
+                                                "example": "gpt-4",
+                                                "nullable": true
+                                            },
+                                            "system_prompt": {
+                                                "type": "string",
+                                                "example": "Voce e um especialista em Python...",
+                                                "nullable": true
+                                            },
+                                            "instructions": {
+                                                "type": "string",
+                                                "example": "Sempre siga as boas praticas PEP 8...",
+                                                "nullable": true
+                                            },
+                                            "configuration": {
+                                                "type": "object",
+                                                "example": {
+                                                    "temperature": 0.5,
+                                                    "max_tokens": 2000
+                                                },
+                                                "nullable": true
+                                            },
+                                            "is_active": {
+                                                "type": "boolean",
+                                                "example": true
+                                            },
+                                            "created_at": {
+                                                "type": "string",
+                                                "format": "date-time"
+                                            },
+                                            "updated_at": {
+                                                "type": "string",
+                                                "format": "date-time"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Nao autenticado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "AI Agents"
+                ],
+                "summary": "Criar novo agente de IA",
+                "description": "Cria um agente de IA personalizado com instrucoes e configuracoes especificas para o usuario autenticado.",
+                "operationId": "createAgent",
+                "requestBody": {
+                    "description": "Dados do agente",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "ai_provider"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "description": "Nome do agente",
+                                        "type": "string",
+                                        "example": "Assistente de Codigo Python"
+                                    },
+                                    "description": {
+                                        "description": "Descricao do agente",
+                                        "type": "string",
+                                        "example": "Agente especializado em revisar codigo Python",
+                                        "nullable": true
+                                    },
+                                    "ai_provider": {
+                                        "description": "Provedor de IA",
+                                        "type": "string",
+                                        "enum": [
+                                            "openai",
+                                            "gemini"
+                                        ],
+                                        "example": "openai"
+                                    },
+                                    "ai_model": {
+                                        "description": "Modelo especifico da IA",
+                                        "type": "string",
+                                        "example": "gpt-4",
+                                        "nullable": true
+                                    },
+                                    "system_prompt": {
+                                        "description": "Prompt de sistema para contexto",
+                                        "type": "string",
+                                        "example": "Voce e um especialista em Python...",
+                                        "nullable": true
+                                    },
+                                    "instructions": {
+                                        "description": "Instrucoes adicionais",
+                                        "type": "string",
+                                        "example": "Sempre siga PEP 8...",
+                                        "nullable": true
+                                    },
+                                    "configuration": {
+                                        "description": "Configuracoes personalizadas",
+                                        "type": "object",
+                                        "example": {
+                                            "temperature": 0.5,
+                                            "max_tokens": 2000
+                                        },
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Agente criado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Agente criado com sucesso!"
+                                        },
+                                        "agent": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Assistente de Codigo Python"
+                                                },
+                                                "ai_provider": {
+                                                    "type": "string",
+                                                    "example": "openai"
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erro de validacao",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "The name field is required."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Nao autenticado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/agents/{id}": {
+            "get": {
+                "tags": [
+                    "AI Agents"
+                ],
+                "summary": "Obter agente especifico",
+                "description": "Retorna os detalhes completos de um agente de IA especifico do usuario autenticado.",
+                "operationId": "getAgent",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do agente",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Agente retornado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "Assistente de Codigo Python"
+                                        },
+                                        "description": {
+                                            "type": "string"
+                                        },
+                                        "ai_provider": {
+                                            "type": "string",
+                                            "example": "openai"
+                                        },
+                                        "system_prompt": {
+                                            "type": "string"
+                                        },
+                                        "configuration": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Agente nao encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No query results for model [App\\\\Models\\\\AiAgent]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Nao autenticado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "AI Agents"
+                ],
+                "summary": "Atualizar agente",
+                "description": "Atualiza as informacoes de um agente de IA existente do usuario autenticado.",
+                "operationId": "updateAgent",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do agente",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Campos a serem atualizados",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Assistente de Codigo Python Avancado"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "ai_provider": {
+                                        "type": "string",
+                                        "enum": [
+                                            "openai",
+                                            "gemini"
+                                        ]
+                                    },
+                                    "ai_model": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "system_prompt": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "instructions": {
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "configuration": {
+                                        "type": "object",
+                                        "nullable": true
+                                    },
+                                    "is_active": {
+                                        "type": "boolean"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Agente atualizado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Agente atualizado com sucesso!"
+                                        },
+                                        "agent": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Agente nao encontrado"
+                    },
+                    "422": {
+                        "description": "Erro de validacao"
+                    },
+                    "401": {
+                        "description": "Nao autenticado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "AI Agents"
+                ],
+                "summary": "Deletar agente",
+                "description": "Remove permanentemente um agente de IA do usuario autenticado.",
+                "operationId": "deleteAgent",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do agente",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Agente deletado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Agente deletado com sucesso!"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Agente nao encontrado"
+                    },
+                    "401": {
+                        "description": "Nao autenticado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/agents/{id}/prompt": {
+            "post": {
+                "tags": [
+                    "AI Agents"
+                ],
+                "summary": "Enviar prompt para agente especifico",
+                "description": "Envia um prompt para um agente de IA especifico. O agente aplica seu system_prompt, instrucoes e configuracoes ao processar o prompt.",
+                "operationId": "sendPromptToAgent",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID do agente",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Dados do prompt",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "api_token",
+                                    "prompt"
+                                ],
+                                "properties": {
+                                    "api_token": {
+                                        "description": "Token de API do provedor configurado no agente",
+                                        "type": "string",
+                                        "example": "sk-proj-abc123..."
+                                    },
+                                    "prompt": {
+                                        "description": "Texto do prompt do usuario",
+                                        "type": "string",
+                                        "minLength": 10,
+                                        "example": "Revise este codigo Python e sugira melhorias"
+                                    },
+                                    "file_content": {
+                                        "description": "Conteudo de arquivo ou dados adicionais",
+                                        "type": "string",
+                                        "example": "def soma(a, b):\\n    return a+b",
+                                        "nullable": true
+                                    },
+                                    "additional_data": {
+                                        "description": "Informacoes extras para contexto",
+                                        "type": "string",
+                                        "example": "O codigo deve seguir PEP 8",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Resposta do agente recebida com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "response": {
+                                            "type": "string",
+                                            "example": "Aqui estao as sugestoes de melhoria para seu codigo..."
+                                        },
+                                        "agent": {
+                                            "type": "string",
+                                            "example": "Assistente de Codigo Python"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Agente nao encontrado"
+                    },
+                    "422": {
+                        "description": "Erro de validacao"
+                    },
+                    "500": {
+                        "description": "Erro ao processar prompt"
+                    },
+                    "401": {
+                        "description": "Nao autenticado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/ai/prompt": {
+            "post": {
+                "tags": [
+                    "AI Prompts"
+                ],
+                "summary": "Enviar prompt para IA",
+                "description": "Envia um prompt diretamente para o provedor de IA escolhido (OpenAI ou Google Gemini). Requer autenticacao e token da API do provedor.",
+                "operationId": "sendPrompt",
+                "requestBody": {
+                    "description": "Dados do prompt para envio",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "provider",
+                                    "api_token",
+                                    "prompt"
+                                ],
+                                "properties": {
+                                    "provider": {
+                                        "description": "Provedor de IA a ser usado",
+                                        "type": "string",
+                                        "enum": [
+                                            "openai",
+                                            "gemini"
+                                        ],
+                                        "example": "openai"
+                                    },
+                                    "api_token": {
+                                        "description": "Token de API do provedor escolhido",
+                                        "type": "string",
+                                        "example": "sk-proj-abc123..."
+                                    },
+                                    "prompt": {
+                                        "description": "Texto do prompt (minimo 10 caracteres)",
+                                        "type": "string",
+                                        "minLength": 10,
+                                        "example": "Explique o que e inteligencia artificial em 100 palavras"
+                                    },
+                                    "temperature": {
+                                        "description": "Controle de criatividade (0=deterministico, 1=criativo)",
+                                        "type": "number",
+                                        "format": "float",
+                                        "maximum": 1,
+                                        "minimum": 0,
+                                        "example": 0.7
+                                    },
+                                    "max_tokens": {
+                                        "description": "Limite maximo de tokens na resposta",
+                                        "type": "integer",
+                                        "maximum": 4000,
+                                        "minimum": 100,
+                                        "example": 1000
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Resposta da IA recebida com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "response": {
+                                            "type": "string",
+                                            "example": "Inteligencia artificial e a simulacao de processos de inteligencia humana por sistemas computacionais..."
+                                        },
+                                        "provider": {
+                                            "type": "string",
+                                            "example": "openai"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erro de validacao",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "The provider field is required."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro ao processar prompt",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Erro ao processar prompt: OpenAI API Error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Nao autenticado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/register": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Registrar novo usuario",
+                "description": "Cria uma nova conta de usuario com email e senha. Retorna o token JWT apos cadastro bem-sucedido.",
+                "operationId": "register",
+                "requestBody": {
+                    "description": "Dados do usuario para registro",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password",
+                                    "password_confirmation"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "description": "Nome completo do usuario",
+                                        "type": "string",
+                                        "example": "Joao Silva"
+                                    },
+                                    "email": {
+                                        "description": "Email unico do usuario",
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "joao@exemplo.com"
+                                    },
+                                    "password": {
+                                        "description": "Senha do usuario (minimo 6 caracteres)",
+                                        "type": "string",
+                                        "format": "password",
+                                        "minLength": 6,
+                                        "example": "senha123"
+                                    },
+                                    "password_confirmation": {
+                                        "description": "Confirmacao da senha",
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "senha123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Usuario registrado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User successfully registered"
+                                        },
+                                        "user": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Joao Silva"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "joao@exemplo.com"
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-11-25T10:00:00.000000Z"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "token": {
+                                            "type": "string",
+                                            "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erro de validacao",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "properties": {
+                                                "email": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string",
+                                                        "example": "The email has already been taken."
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Login de usuario",
+                "description": "Autentica usuario com email e senha. Retorna token JWT para autorizacao.",
+                "operationId": "login",
+                "requestBody": {
+                    "description": "Credenciais do usuario",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "joao@exemplo.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "senha123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login realizado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "type": "string",
+                                            "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+                                        },
+                                        "user": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "Joao Silva"
+                                                },
+                                                "email": {
+                                                    "type": "string",
+                                                    "example": "joao@exemplo.com"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Credenciais invalidas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Invalid credentials"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/logout": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Logout de usuario",
+                "description": "Invalida o token JWT atual. Requer autenticacao.",
+                "operationId": "logout",
+                "responses": {
+                    "200": {
+                        "description": "Logout realizado com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Successfully logged out"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Nao autenticado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/me": {
+            "get": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Obter usuario autenticado",
+                "description": "Retorna as informacoes do usuario atualmente autenticado.",
+                "operationId": "getAuthenticatedUser",
+                "responses": {
+                    "200": {
+                        "description": "Dados do usuario autenticado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "Joao Silva"
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "example": "joao@exemplo.com"
+                                        },
+                                        "google_id": {
+                                            "type": "string",
+                                            "example": "1234567890",
+                                            "nullable": true
+                                        },
+                                        "avatar": {
+                                            "type": "string",
+                                            "example": "https://lh3.googleusercontent.com/...",
+                                            "nullable": true
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "format": "date-time"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Nao autenticado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/auth/google": {
+            "get": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Iniciar autenticacao Google OAuth",
+                "description": "Retorna a URL de redirecionamento para autenticacao via Google OAuth",
+                "operationId": "redirectToGoogle",
+                "responses": {
+                    "200": {
+                        "description": "URL de redirecionamento do Google",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "url": {
+                                            "type": "string",
+                                            "example": "https://accounts.google.com/o/oauth2/v2/auth?client_id=..."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro ao gerar URL do Google",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Erro ao redirecionar para Google"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/google/callback": {
+            "get": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Callback do Google OAuth",
+                "description": "Endpoint de callback do Google OAuth. Processa o codigo de autorizacao e redireciona para o frontend com o token JWT.",
+                "operationId": "handleGoogleCallback",
+                "parameters": [
+                    {
+                        "name": "code",
+                        "in": "query",
+                        "description": "Codigo de autorizacao retornado pelo Google",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "302": {
+                        "description": "Redireciona para o frontend com token ou erro",
+                        "headers": {
+                            "Location": {
+                                "description": "URL de redirecionamento (frontend/auth/callback?token={token} ou frontend/login?error=...)",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/tasks": {
+            "post": {
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Criar nova tarefa de IA",
+                "description": "Cria uma tarefa de processamento de IA em background. A tarefa e enviada para uma fila e processada de forma assincrona. Retorna imediatamente com status PENDING.",
+                "operationId": "createTask",
+                "requestBody": {
+                    "description": "Dados da tarefa",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "prompt",
+                                    "ai_api_key"
+                                ],
+                                "properties": {
+                                    "prompt": {
+                                        "description": "Prompt para o agente de IA (maximo 2000 caracteres)",
+                                        "type": "string",
+                                        "maxLength": 2000,
+                                        "example": "Analise este texto e extraia os principais topicos..."
+                                    },
+                                    "ai_api_key": {
+                                        "description": "Chave de API do provedor de IA (OpenAI, Gemini, etc)",
+                                        "type": "string",
+                                        "example": "sk-proj-abc123..."
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "202": {
+                        "description": "Tarefa aceita e enviada para processamento",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Tarefa enviada para o agente de IA."
+                                        },
+                                        "task_id": {
+                                            "type": "string",
+                                            "format": "uuid",
+                                            "example": "550e8400-e29b-41d4-a716-446655440000"
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "enum": [
+                                                "PENDING",
+                                                "PROCESSING",
+                                                "COMPLETED",
+                                                "FAILED"
+                                            ],
+                                            "example": "PENDING"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Erro de validacao",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The prompt field is required."
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Nao autenticado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/tasks/{task}": {
+            "get": {
+                "tags": [
+                    "Tasks"
+                ],
+                "summary": "Obter status de uma tarefa",
+                "description": "Retorna os detalhes e o status atual de uma tarefa de processamento de IA. O usuario so pode visualizar suas proprias tarefas.",
+                "operationId": "getTask",
+                "parameters": [
+                    {
+                        "name": "task",
+                        "in": "path",
+                        "description": "UUID da tarefa",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid",
+                            "example": "550e8400-e29b-41d4-a716-446655440000"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Tarefa retornada com sucesso",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "string",
+                                            "format": "uuid",
+                                            "example": "550e8400-e29b-41d4-a716-446655440000"
+                                        },
+                                        "user_id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "prompt": {
+                                            "type": "string",
+                                            "example": "Analise este texto..."
+                                        },
+                                        "status": {
+                                            "type": "string",
+                                            "enum": [
+                                                "PENDING",
+                                                "PROCESSING",
+                                                "COMPLETED",
+                                                "FAILED"
+                                            ],
+                                            "example": "COMPLETED"
+                                        },
+                                        "result": {
+                                            "description": "Resultado do processamento quando status=COMPLETED",
+                                            "type": "string",
+                                            "example": "Analise completa: Os principais topicos sao...",
+                                            "nullable": true
+                                        },
+                                        "error": {
+                                            "description": "Mensagem de erro quando status=FAILED",
+                                            "type": "string",
+                                            "example": "API timeout after 30s",
+                                            "nullable": true
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2025-11-25T10:00:00.000000Z"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "format": "date-time",
+                                            "example": "2025-11-25T10:00:30.000000Z"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Usuario nao autorizado a ver esta tarefa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Nao autorizado."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Tarefa nao encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No query results for model [App\\\\Models\\\\Task]"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Nao autenticado"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "description": "JWT Authorization header using the Bearer scheme. Example: 'Authorization: Bearer {token}'",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Authentication",
+            "description": "Endpoints para autenticacao de usuarios (registro, login, logout, OAuth Google)"
+        },
+        {
+            "name": "AI Prompts",
+            "description": "Endpoints para enviar prompts diretamente para provedores de IA (OpenAI, Gemini)"
+        },
+        {
+            "name": "AI Agents",
+            "description": "Endpoints para gerenciar agentes de IA personalizados (CRUD completo e envio de prompts)"
+        },
+        {
+            "name": "Tasks",
+            "description": "Endpoints para gerenciar tarefas de processamento de IA em background (criacao e consulta de status)"
+        }
+    ]
+}

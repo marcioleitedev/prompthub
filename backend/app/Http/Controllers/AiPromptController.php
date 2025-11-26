@@ -11,7 +11,56 @@ use Illuminate\Support\Facades\Log;
 class AiPromptController extends Controller
 {
     /**
-     * Send prompt to AI provider
+     * @OA\Post(
+     *     path="/ai/prompt",
+     *     summary="Enviar prompt para IA",
+     *     description="Envia um prompt diretamente para o provedor de IA escolhido (OpenAI ou Google Gemini). Requer autenticacao e token da API do provedor.",
+     *     operationId="sendPrompt",
+     *     tags={"AI Prompts"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Dados do prompt para envio",
+     *         @OA\JsonContent(
+     *             required={"provider","api_token","prompt"},
+     *             @OA\Property(property="provider", type="string", enum={"openai", "gemini"}, example="openai", description="Provedor de IA a ser usado"),
+     *             @OA\Property(property="api_token", type="string", example="sk-proj-abc123...", description="Token de API do provedor escolhido"),
+     *             @OA\Property(property="prompt", type="string", example="Explique o que e inteligencia artificial em 100 palavras", minLength=10, description="Texto do prompt (minimo 10 caracteres)"),
+     *             @OA\Property(property="temperature", type="number", format="float", example=0.7, minimum=0, maximum=1, description="Controle de criatividade (0=deterministico, 1=criativo)"),
+     *             @OA\Property(property="max_tokens", type="integer", example=1000, minimum=100, maximum=4000, description="Limite maximo de tokens na resposta")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Resposta da IA recebida com sucesso",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="response", type="string", example="Inteligencia artificial e a simulacao de processos de inteligencia humana por sistemas computacionais..."),
+     *             @OA\Property(property="provider", type="string", example="openai")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Erro de validacao",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="The provider field is required.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Erro ao processar prompt",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Erro ao processar prompt: OpenAI API Error")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Nao autenticado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthenticated")
+     *         )
+     *     )
+     * )
      */
     public function sendPrompt(Request $request)
     {

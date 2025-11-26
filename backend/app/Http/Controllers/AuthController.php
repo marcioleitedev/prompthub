@@ -16,7 +16,47 @@ use Illuminate\Support\Facades\Http;
 class AuthController extends Controller
 {
     /**
-     * Register a new user
+     * @OA\Post(
+     *     path="/register",
+     *     summary="Registrar novo usuario",
+     *     description="Cria uma nova conta de usuario com email e senha. Retorna o token JWT apos cadastro bem-sucedido.",
+     *     operationId="register",
+     *     tags={"Authentication"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Dados do usuario para registro",
+     *         @OA\JsonContent(
+     *             required={"name","email","password","password_confirmation"},
+     *             @OA\Property(property="name", type="string", example="Joao Silva", description="Nome completo do usuario"),
+     *             @OA\Property(property="email", type="string", format="email", example="joao@exemplo.com", description="Email unico do usuario"),
+     *             @OA\Property(property="password", type="string", format="password", example="senha123", minLength=6, description="Senha do usuario (minimo 6 caracteres)"),
+     *             @OA\Property(property="password_confirmation", type="string", format="password", example="senha123", description="Confirmacao da senha")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Usuario registrado com sucesso",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="User successfully registered"),
+     *             @OA\Property(property="user", type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="name", type="string", example="Joao Silva"),
+     *                 @OA\Property(property="email", type="string", example="joao@exemplo.com"),
+     *                 @OA\Property(property="created_at", type="string", format="date-time", example="2025-11-25T10:00:00.000000Z")
+     *             ),
+     *             @OA\Property(property="token", type="string", example="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Erro de validacao",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="errors", type="object",
+     *                 @OA\Property(property="email", type="array", @OA\Items(type="string", example="The email has already been taken."))
+     *             )
+     *         )
+     *     )
+     * )
      */
     public function register(Request $request)
     {
@@ -46,7 +86,41 @@ class AuthController extends Controller
     }
 
     /**
-     * Login user
+     * @OA\Post(
+     *     path="/login",
+     *     summary="Login de usuario",
+     *     description="Autentica usuario com email e senha. Retorna token JWT para autorizacao.",
+     *     operationId="login",
+     *     tags={"Authentication"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Credenciais do usuario",
+     *         @OA\JsonContent(
+     *             required={"email","password"},
+     *             @OA\Property(property="email", type="string", format="email", example="joao@exemplo.com"),
+     *             @OA\Property(property="password", type="string", format="password", example="senha123")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Login realizado com sucesso",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="token", type="string", example="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."),
+     *             @OA\Property(property="user", type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="name", type="string", example="Joao Silva"),
+     *                 @OA\Property(property="email", type="string", example="joao@exemplo.com")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Credenciais invalidas",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Invalid credentials")
+     *         )
+     *     )
+     * )
      */
     public function login(Request $request)
     {
@@ -65,7 +139,28 @@ class AuthController extends Controller
     }
 
     /**
-     * Logout user
+     * @OA\Post(
+     *     path="/logout",
+     *     summary="Logout de usuario",
+     *     description="Invalida o token JWT atual. Requer autenticacao.",
+     *     operationId="logout",
+     *     tags={"Authentication"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Logout realizado com sucesso",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Successfully logged out")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Nao autenticado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthenticated")
+     *         )
+     *     )
+     * )
      */
     public function logout()
     {
@@ -74,7 +169,33 @@ class AuthController extends Controller
     }
 
     /**
-     * Get authenticated user
+     * @OA\Get(
+     *     path="/me",
+     *     summary="Obter usuario autenticado",
+     *     description="Retorna as informacoes do usuario atualmente autenticado.",
+     *     operationId="getAuthenticatedUser",
+     *     tags={"Authentication"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Dados do usuario autenticado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="id", type="integer", example=1),
+     *             @OA\Property(property="name", type="string", example="Joao Silva"),
+     *             @OA\Property(property="email", type="string", example="joao@exemplo.com"),
+     *             @OA\Property(property="google_id", type="string", nullable=true, example="1234567890"),
+     *             @OA\Property(property="avatar", type="string", nullable=true, example="https://lh3.googleusercontent.com/..."),
+     *             @OA\Property(property="created_at", type="string", format="date-time")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Nao autenticado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthenticated")
+     *         )
+     *     )
+     * )
      */
     public function me()
     {
@@ -82,7 +203,27 @@ class AuthController extends Controller
     }
 
     /**
-     * Redirect to Google for authentication
+     * @OA\Get(
+     *     path="/auth/google",
+     *     summary="Iniciar autenticacao Google OAuth",
+     *     description="Retorna a URL de redirecionamento para autenticacao via Google OAuth",
+     *     operationId="redirectToGoogle",
+     *     tags={"Authentication"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="URL de redirecionamento do Google",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="url", type="string", example="https://accounts.google.com/o/oauth2/v2/auth?client_id=...")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Erro ao gerar URL do Google",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Erro ao redirecionar para Google")
+     *         )
+     *     )
+     * )
      */
     public function redirectToGoogle()
     {
@@ -108,7 +249,29 @@ class AuthController extends Controller
     }
 
     /**
-     * Handle Google callback
+     * @OA\Get(
+     *     path="/auth/google/callback",
+     *     summary="Callback do Google OAuth",
+     *     description="Endpoint de callback do Google OAuth. Processa o codigo de autorizacao e redireciona para o frontend com o token JWT.",
+     *     operationId="handleGoogleCallback",
+     *     tags={"Authentication"},
+     *     @OA\Parameter(
+     *         name="code",
+     *         in="query",
+     *         required=true,
+     *         description="Codigo de autorizacao retornado pelo Google",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=302,
+     *         description="Redireciona para o frontend com token ou erro",
+     *         @OA\Header(
+     *             header="Location",
+     *             description="URL de redirecionamento (frontend/auth/callback?token={token} ou frontend/login?error=...)",
+     *             @OA\Schema(type="string")
+     *         )
+     *     )
+     * )
      */
     public function handleGoogleCallback(Request $request)
     {

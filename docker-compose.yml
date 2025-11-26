@@ -8,29 +8,20 @@ services:
       dockerfile: Dockerfile
     container_name: prompthub-backend
     ports:
-      - "8000:8000"
+      - "8000:80"
     volumes:
       - ./backend:/var/www/html
       - backend-vendor:/var/www/html/vendor
     environment:
       - APP_ENV=local
       - APP_DEBUG=true
-      - DB_CONNECTION=mysql
-      - DB_HOST=SEU_IP_MYSQL_AQUI
-      - DB_PORT=3306
-      - DB_DATABASE=seu_database
-      - DB_USERNAME=seu_usuario
-      - DB_PASSWORD=sua_senha
-      - REDIS_HOST=SEU_IP_REDIS_AQUI
-      - REDIS_PASSWORD=sua_senha_redis
-      - REDIS_PORT=6379
+      - DB_CONNECTION=sqlite
+      - CACHE_DRIVER=file
+      - SESSION_DRIVER=file
+      - QUEUE_CONNECTION=sync
       - FRONTEND_URL=http://localhost
-      - GOOGLE_CLIENT_ID=sua_google_client_id_aqui
-      - GOOGLE_CLIENT_SECRET=sua_google_client_secret_aqui
-      - GOOGLE_REDIRECT_URI=http://localhost:8000/api/auth/google/callback
     networks:
       - prompthub-network
-    command: php artisan serve --host=0.0.0.0 --port=8000
 
   # Queue Worker
   queue-worker:

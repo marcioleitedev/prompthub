@@ -15,6 +15,44 @@ class AiAgentController extends Controller
         // Middleware já aplicado nas rotas
     }
 
+    /**
+     * @OA\Get(
+     *     path="/agents",
+     *     summary="Listar agentes de IA",
+     *     description="Retorna todos os agentes de IA do usuario autenticado ordenados por data de criacao (mais recentes primeiro).",
+     *     operationId="listAgents",
+     *     tags={"AI Agents"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de agentes retornada com sucesso",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="user_id", type="integer", example=1),
+     *                 @OA\Property(property="name", type="string", example="Assistente de Codigo Python"),
+     *                 @OA\Property(property="description", type="string", example="Agente especializado em revisar e otimizar codigo Python"),
+     *                 @OA\Property(property="ai_provider", type="string", example="openai"),
+     *                 @OA\Property(property="ai_model", type="string", nullable=true, example="gpt-4"),
+     *                 @OA\Property(property="system_prompt", type="string", nullable=true, example="Voce e um especialista em Python..."),
+     *                 @OA\Property(property="instructions", type="string", nullable=true, example="Sempre siga as boas praticas PEP 8..."),
+     *                 @OA\Property(property="configuration", type="object", nullable=true, example={"temperature": 0.5, "max_tokens": 2000}),
+     *                 @OA\Property(property="is_active", type="boolean", example=true),
+     *                 @OA\Property(property="created_at", type="string", format="date-time"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Nao autenticado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthenticated")
+     *         )
+     *     )
+     * )
+     */
     public function index()
     {
         $agents = auth('api')->user()->aiAgents()->latest()->get();
@@ -22,7 +60,52 @@ class AiAgentController extends Controller
     }
 
     /**
-     * Create a new agent
+     * @OA\Post(
+     *     path="/agents",
+     *     summary="Criar novo agente de IA",
+     *     description="Cria um agente de IA personalizado com instrucoes e configuracoes especificas para o usuario autenticado.",
+     *     operationId="createAgent",
+     *     tags={"AI Agents"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Dados do agente",
+     *         @OA\JsonContent(
+     *             required={"name","ai_provider"},
+     *             @OA\Property(property="name", type="string", example="Assistente de Codigo Python", description="Nome do agente"),
+     *             @OA\Property(property="description", type="string", nullable=true, example="Agente especializado em revisar codigo Python", description="Descricao do agente"),
+     *             @OA\Property(property="ai_provider", type="string", enum={"openai", "gemini"}, example="openai", description="Provedor de IA"),
+     *             @OA\Property(property="ai_model", type="string", nullable=true, example="gpt-4", description="Modelo especifico da IA"),
+     *             @OA\Property(property="system_prompt", type="string", nullable=true, example="Voce e um especialista em Python...", description="Prompt de sistema para contexto"),
+     *             @OA\Property(property="instructions", type="string", nullable=true, example="Sempre siga PEP 8...", description="Instrucoes adicionais"),
+     *             @OA\Property(property="configuration", type="object", nullable=true, example={"temperature": 0.5, "max_tokens": 2000}, description="Configuracoes personalizadas")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Agente criado com sucesso",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Agente criado com sucesso!"),
+     *             @OA\Property(property="agent", type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="name", type="string", example="Assistente de Codigo Python"),
+     *                 @OA\Property(property="ai_provider", type="string", example="openai"),
+     *                 @OA\Property(property="created_at", type="string", format="date-time")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Erro de validacao",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="The name field is required.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Nao autenticado"
+     *     )
+     * )
      */
     public function store(Request $request)
     {
@@ -49,7 +132,44 @@ class AiAgentController extends Controller
     }
 
     /**
-     * Get a specific agent
+     * @OA\Get(
+     *     path="/agents/{id}",
+     *     summary="Obter agente especifico",
+     *     description="Retorna os detalhes completos de um agente de IA especifico do usuario autenticado.",
+     *     operationId="getAgent",
+     *     tags={"AI Agents"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID do agente",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Agente retornado com sucesso",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="id", type="integer", example=1),
+     *             @OA\Property(property="name", type="string", example="Assistente de Codigo Python"),
+     *             @OA\Property(property="description", type="string"),
+     *             @OA\Property(property="ai_provider", type="string", example="openai"),
+     *             @OA\Property(property="system_prompt", type="string"),
+     *             @OA\Property(property="configuration", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Agente nao encontrado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="No query results for model [App\\Models\\AiAgent]")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Nao autenticado"
+     *     )
+     * )
      */
     public function show($id)
     {
@@ -58,7 +178,55 @@ class AiAgentController extends Controller
     }
 
     /**
-     * Update an agent
+     * @OA\Put(
+     *     path="/agents/{id}",
+     *     summary="Atualizar agente",
+     *     description="Atualiza as informacoes de um agente de IA existente do usuario autenticado.",
+     *     operationId="updateAgent",
+     *     tags={"AI Agents"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID do agente",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Campos a serem atualizados",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="name", type="string", example="Assistente de Codigo Python Avancado"),
+     *             @OA\Property(property="description", type="string", nullable=true),
+     *             @OA\Property(property="ai_provider", type="string", enum={"openai", "gemini"}),
+     *             @OA\Property(property="ai_model", type="string", nullable=true),
+     *             @OA\Property(property="system_prompt", type="string", nullable=true),
+     *             @OA\Property(property="instructions", type="string", nullable=true),
+     *             @OA\Property(property="configuration", type="object", nullable=true),
+     *             @OA\Property(property="is_active", type="boolean")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Agente atualizado com sucesso",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Agente atualizado com sucesso!"),
+     *             @OA\Property(property="agent", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Agente nao encontrado"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Erro de validacao"
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Nao autenticado"
+     *     )
+     * )
      */
     public function update(Request $request, $id)
     {
@@ -88,7 +256,36 @@ class AiAgentController extends Controller
     }
 
     /**
-     * Delete an agent
+     * @OA\Delete(
+     *     path="/agents/{id}",
+     *     summary="Deletar agente",
+     *     description="Remove permanentemente um agente de IA do usuario autenticado.",
+     *     operationId="deleteAgent",
+     *     tags={"AI Agents"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID do agente",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Agente deletado com sucesso",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Agente deletado com sucesso!")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Agente nao encontrado"
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Nao autenticado"
+     *     )
+     * )
      */
     public function destroy($id)
     {
@@ -101,7 +298,57 @@ class AiAgentController extends Controller
     }
 
     /**
-     * Send prompt to a specific agent
+     * @OA\Post(
+     *     path="/agents/{id}/prompt",
+     *     summary="Enviar prompt para agente especifico",
+     *     description="Envia um prompt para um agente de IA especifico. O agente aplica seu system_prompt, instrucoes e configuracoes ao processar o prompt.",
+     *     operationId="sendPromptToAgent",
+     *     tags={"AI Agents"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID do agente",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Dados do prompt",
+     *         @OA\JsonContent(
+     *             required={"api_token","prompt"},
+     *             @OA\Property(property="api_token", type="string", example="sk-proj-abc123...", description="Token de API do provedor configurado no agente"),
+     *             @OA\Property(property="prompt", type="string", example="Revise este codigo Python e sugira melhorias", minLength=10, description="Texto do prompt do usuario"),
+     *             @OA\Property(property="file_content", type="string", nullable=true, example="def soma(a, b):\n    return a+b", description="Conteudo de arquivo ou dados adicionais"),
+     *             @OA\Property(property="additional_data", type="string", nullable=true, example="O codigo deve seguir PEP 8", description="Informacoes extras para contexto")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Resposta do agente recebida com sucesso",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="response", type="string", example="Aqui estao as sugestoes de melhoria para seu codigo..."),
+     *             @OA\Property(property="agent", type="string", example="Assistente de Codigo Python")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Agente nao encontrado"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Erro de validacao"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Erro ao processar prompt"
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Nao autenticado"
+     *     )
+     * )
      */
     public function sendPrompt(Request $request, $id)
     {

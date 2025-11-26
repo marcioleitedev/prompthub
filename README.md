@@ -148,7 +148,7 @@ portfolio-IA/
 ## 🛠️ Tecnologias
 
 ### Backend
-- **Laravel 12** - Framework PHP moderno e robusto
+- **Laravel 12** - Framework PHP 
 - **Laravel Queue & Jobs** - Sistema de filas para processamento assíncrono de tarefas
 - **Redis** - Cache em memória e gerenciamento de filas de alta performance
 - **Laravel Reverb** - WebSockets para comunicação em tempo real

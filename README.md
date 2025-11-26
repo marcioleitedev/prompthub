@@ -9,8 +9,12 @@ Plataforma completa para criar e gerenciar agentes de IA personalizados com supo
 - ✅ **Autenticação Completa** - Login/cadastro tradicional e Google OAuth
 - ✅ **Prompt Direto** - Envie prompts diretamente para OpenAI ou Gemini
 - ✅ **Agentes Personalizados** - Crie agentes com comportamentos específicos
+- ✅ **Processamento Assíncrono** - Tarefas pesadas processadas em background via Laravel Queue
+- ✅ **Sistema de Filas com Redis** - Processamento escalável e performático
+- ✅ **WebSockets em Tempo Real** - Comunicação instantânea com Laravel Reverb
 - ✅ **Contexto de Arquivos** - Envie arquivos e dados adicionais aos agentes
 - ✅ **Configuração Avançada** - Ajuste temperatura, max tokens e mais
+- ✅ **API Documentada** - Documentação completa com Swagger/OpenAPI
 - ✅ **Interface Moderna** - Design responsivo e intuitivo
 
 ## 🐳 Executar com Docker
@@ -179,4 +183,4 @@ Para fazer deploy em produção com CI/CD automático, consulte o guia completo:
 
 ## 👨‍💻 Autor
 
-Desenvolvido com ❤️ para facilitar o uso de IA.
+Marcio Leite Desenvolvido com ❤️ para facilitar o uso de IA.

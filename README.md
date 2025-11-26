@@ -144,10 +144,14 @@ portfolio-IA/
 ## 🛠️ Tecnologias
 
 ### Backend
-- **Laravel 12** - Framework PHP
-- **JWT Auth** - Autenticação via tokens
-- **MySQL 8** - Banco de dados
-- **Google OAuth** - Login social
+- **Laravel 12** - Framework PHP moderno e robusto
+- **Laravel Queue & Jobs** - Sistema de filas para processamento assíncrono de tarefas
+- **Redis** - Cache em memória e gerenciamento de filas de alta performance
+- **Laravel Reverb** - WebSockets para comunicação em tempo real
+- **JWT Auth (tymon/jwt-auth)** - Autenticação segura via tokens
+- **MySQL 8** - Banco de dados relacional
+- **Google OAuth** - Autenticação social via Google
+- **Swagger/OpenAPI** - Documentação automática da API
 
 ### Frontend
 - **Vue 3** - Framework JavaScript
